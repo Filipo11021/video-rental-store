@@ -1,0 +1,24 @@
+{
+  "name": "@common/pagination",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./page": "./src/page.ts",
+    "./pageable": "./src/pageable.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@common/eslint-config": "workspace:*",
+    "@common/typescript-config": "workspace:*",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^22.9.3",
+    "eslint": "^8.57.0",
+    "typescript": "5.7.2"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.33.22"
+  }
+}

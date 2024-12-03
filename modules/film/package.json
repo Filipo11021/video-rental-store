@@ -1,0 +1,30 @@
+{
+  "name": "@modules/film",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./film-configuration": "./src/domain/film-configuration.ts",
+    "./film-facade": "./src/domain/film-facade.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit",
+    "test": "tsx --test ./test/*.test.ts ./test/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@common/eslint-config": "workspace:*",
+    "@common/pagination": "workspace:*",
+    "@common/typescript-config": "workspace:*",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^22.9.3",
+    "eslint": "^8.57.0",
+    "fastify": "^5.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "@fastify/type-provider-typebox": "^5.0.1",
+    "@sinclair/typebox": "^0.33.22",
+    "knex": "^3.1.0"
+  }
+}

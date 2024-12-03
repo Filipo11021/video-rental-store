@@ -1,0 +1,39 @@
+{
+  "name": "@apps/api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node --env-file=.env ./dist/server.js",
+    "dev": "tsx watch --env-file=.env ./src/server.ts",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit",
+    "migrate": "tsx ./migrate.ts",
+    "make-migration": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@common/eslint-config": "workspace:*",
+    "@common/typescript-config": "workspace:*",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^22.9.3",
+    "eslint": "^8.57.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.7.2"
+  },
+  "dependencies": {
+    "@common/db": "workspace:*",
+    "@fastify/swagger": "^9.4.0",
+    "@fastify/swagger-ui": "^5.1.0",
+    "@modules/film": "workspace:*",
+    "@modules/rental": "workspace:*",
+    "@sinclair/typebox": "^0.34.8",
+    "fastify": "^5.1.0",
+    "fastify-plugin": "^5.0.1",
+    "knex": "^3.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}
