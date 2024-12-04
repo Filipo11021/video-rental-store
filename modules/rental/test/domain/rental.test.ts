@@ -21,7 +21,7 @@ describe('Rental facade', () => {
     // given: film is in the system
     const film = await filmFacade.add(sampleFilms.inception);
 
-    // when: calculating rental price for 3 days
+    // When: calculating rental price for 3 days
     const price = await rentalFacade.calculatePrice({
       durationInDays: 3,
       filmId: film.id,
@@ -32,11 +32,11 @@ describe('Rental facade', () => {
     assert.deepStrictEqual(price, { price: expectedRentalPrice });
   });
 
-  test('rent film', async () => {
-    // given:  film is in the system
+  test('rent available film', async () => {
+    // given: film is in the system
     const film = await filmFacade.add(sampleFilms.inception);
 
-    // when: user rental film
+    // When: a user rents the film
     const rental = await rentalFacade.rent(film.id);
 
     const schema = Type.Object(
@@ -47,14 +47,43 @@ describe('Rental facade', () => {
       },
       { additionalProperties: false },
     );
-    // then: film is rented
+    // then: the film is rented
     assert.strictEqual(Value.Check(schema, rental), true);
   });
 
-  test('return film', () => {
-    // given:
-    // when:
-    // then:
+  test('try to rent not available film', async () => {
+    // Given: a film is already rented
+    const film = await filmFacade.add(sampleFilms.inception);
+    await rentalFacade.rent(film.id);
+
+    // When: user attempts to rent the same film
+    const rentFilm = () => rentalFacade.rent(film.id);
+
+    // Then: the rental is rejected
+    assert.rejects(rentFilm);
+  });
+
+  test('return film', async () => {
+    // given: film is rented
+    const film = await filmFacade.add(sampleFilms.inception);
+    const rental = await rentalFacade.rent(film.id);
+    // When: the user returns the rented film
+    const returned = await rentalFacade.return(rental.id);
+    // then: the film is returned
+    assert.strictEqual(
+      Value.Check(
+        Type.Object(
+          {
+            id: Type.String(),
+            status: Type.Literal('returned'),
+            filmId: Type.Literal(film.id),
+          },
+          { additionalProperties: false },
+        ),
+        returned,
+      ),
+      true,
+    );
   });
 
   test('list of rented films', () => {

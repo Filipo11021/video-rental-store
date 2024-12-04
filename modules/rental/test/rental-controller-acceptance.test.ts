@@ -15,12 +15,12 @@ describe('rental controller acceptance test', async () => {
   await fastify.register(rentalController);
 
   test('rental process', async () => {
-    // given: we film with new type in system
+    // given: film is in the system
     const [oldFilm] = await Promise.all([
       filmFacade.add({ title: 'halo', type: 'old' }),
     ]);
 
-    // when: I go to /rental/calculate-price
+    // when: I request the rental price
     const getCalculatePriceResponse = await fastify.inject({
       method: 'POST',
       path: `/rental/price`,
@@ -29,11 +29,11 @@ describe('rental controller acceptance test', async () => {
         durationInDays: 3,
       },
     });
-    // then: I see price for the film
+    // then: I should see the price for the rental
     assert.strictEqual(getCalculatePriceResponse.statusCode, 200);
     assert.deepEqual(JSON.parse(getCalculatePriceResponse.body), { price: 30 });
 
-    // when: user want rent film
+    // when: I want to rent a film
     const postRentalResponse = await fastify.inject({
       method: 'POST',
       path: '/rental',
@@ -41,17 +41,30 @@ describe('rental controller acceptance test', async () => {
         filmId: oldFilm.id,
       },
     });
+    // then: the film should be rented
     assert.strictEqual(postRentalResponse.statusCode, 200);
-    assert.strictEqual(
-      Value.Check(
-        Type.Object({
+    const rentalBody = JSON.parse(postRentalResponse.body);
+    const parsedRentalBody = Value.Parse(
+      Type.Object(
+        {
           id: Type.String(),
           status: Type.Literal('rented'),
           filmId: Type.Literal(oldFilm.id),
-        }),
-        JSON.parse(postRentalResponse.body),
+        },
+        { additionalProperties: false },
       ),
-      true,
+      rentalBody,
     );
+
+    // when: I want to return the previously rented film
+    const postReturnFilmResponse = await fastify.inject({
+      method: 'POST',
+      path: '/rental/return',
+      body: {
+        rentalId: parsedRentalBody.id,
+      },
+    });
+    // then: the film should be successfully returned
+    assert.strictEqual(postReturnFilmResponse.statusCode, 200);
   });
 });

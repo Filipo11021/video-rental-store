@@ -7,8 +7,10 @@ export function createInMemoryRentalRepository(): RentalRepository {
   const repository = createInMemoryRepository({ store, idColumn: 'id' });
 
   return {
-    isFilmRented() {
-      return false;
+    async isFilmRented({ filmId }) {
+      return Array.from(store.values()).some(
+        (rental) => rental.filmId === filmId && rental.status === 'rented',
+      );
     },
     ...repository,
   };

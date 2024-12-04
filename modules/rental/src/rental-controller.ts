@@ -24,9 +24,21 @@ export const createRentalController: FastifyPluginAsyncTypebox<{
     },
   );
 
-  fastify.post('/rental/return', () => {
-    return 'post:return';
-  });
+  fastify.post(
+    '/rental/return',
+    {
+      schema: {
+        body: Type.Object({ rentalId: Type.String() }),
+        response: {
+          200: rentalDtoSchema,
+        },
+      },
+    },
+    async (req) => {
+      const { rentalId } = req.body;
+      return rentalFacade.return(rentalId);
+    },
+  );
 
   fastify.post(
     '/rental/price',

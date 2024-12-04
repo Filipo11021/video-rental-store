@@ -53,6 +53,8 @@ export function createInMemoryRepository<
       const existing = store.get(id);
       if (existing) {
         store.set(id, { ...existing, ...entity });
+      } else {
+        throw Error('Cannot update entity - no existing entity found with the provided ID');
       }
     },
 

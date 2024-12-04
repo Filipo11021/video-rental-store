@@ -1,15 +1,12 @@
 import { Rental } from './rental';
-import {
-  Repository,
-  createRepository,
-} from '@common/db/repository';
+import { Repository, createRepository } from '@common/db/repository';
 import { Knex } from 'knex';
 
 export type RentalRepository = Pick<
   Repository<Rental, 'id'>,
   'save' | 'update' | 'findOneBy'
 > & {
-  isFilmRented(params: { filmId: string }): boolean;
+  isFilmRented(params: { filmId: string }): Promise<boolean>;
 };
 
 export function createRentalRepository({
@@ -24,8 +21,12 @@ export function createRentalRepository({
   });
 
   return {
-    isFilmRented() {
-      return true;
+    async isFilmRented({ filmId }) {
+      const result = await knex('rentals')
+        .where({ filmId, status: 'rented' })
+        .first();
+
+      return !!result;
     },
     ...repository,
   };

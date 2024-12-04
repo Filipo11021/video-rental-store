@@ -20,6 +20,13 @@ export function createRental({ filmId }: { filmId: string }): Rental {
   };
 }
 
+export function updateRental(data: Partial<Rental>): Partial<Rental> {
+  return {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function rentalToDto({ filmId, id, status }: Rental): RentalDto {
   return {
     filmId,
